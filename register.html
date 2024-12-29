@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthTrack - Register</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4e5ff;
+            font-family: 'Baskerville', serif;
+            color: #333;
+        }
+        
+        .register-container {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 550px;
+        }
+
+        .register-container:hover {
+            border: 3px solid #4b0082;
+            box-shadow: 0 0 10px #4b4550;
+            border-radius: 15px;
+        }
+        
+        h2 {
+            font-family: 'Baskerville', serif;
+            font-size: 40px;
+            font-weight: bold;
+            color: #4b0082;
+            margin-bottom: 40px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #333;
+            font-weight: bold;
+            font-family: 'Baskerville', serif;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            margin: 5px 0 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-family: 'Baskerville', serif;
+            font-size: 16px;
+        }
+
+        .button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            background-color: #4b0082;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: 'Baskerville', serif;
+        }
+
+        .button:hover {
+            background-color: #5f00a6;
+        }
+
+        .back-to-login {
+            background-color: #ffffff;
+            color: #4b0082;
+            border: 2px solid #4b0082;
+            font-family: 'Baskerville', serif;
+        }
+
+        .back-to-login:hover {
+            background-color: #f0e0ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h2>Create Account</h2>
+        
+        <form id="registerForm">
+            <div class="form-group">
+                <input type="text" id="firstName" name="firstName" placeholder="First Name" required>
+            </div>
+            
+            <div class="form-group">
+                <input type="text" id="lastName" name="lastName" placeholder="Last Name" required>
+            </div>
+            
+            <div class="form-group">
+                <input type="text" id="username" name="username" placeholder="Username" required>
+            </div>
+            
+            <div class="form-group">
+                <input type="password" id="password" name="password" placeholder="Password" required minlength="6">
+            </div>
+            
+            <div class="form-group">
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+            </div>
+            
+            <button type="submit" class="button">Register</button>
+            <div id="registerError" class="error"></div>
+        </form>
+        
+        <button onclick="window.location.href='login.html'" class="button back-to-login">Already have an account?</button>
+    </div>
+
+    <script>
+        document.getElementById("registerForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            
+            document.getElementById("registerError").style.display = "none";
+            
+            const firstName = document.getElementById("firstName").value.trim();
+            const lastName = document.getElementById("lastName").value.trim();
+            const username = document.getElementById("username").value.trim().toLowerCase();
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+            
+            if (password !== confirmPassword) {
+                const errorDiv = document.getElementById("registerError");
+                errorDiv.textContent = "Passwords do not match";
+                errorDiv.style.display = "block";
+                return;
+            }
+            
+            if (password.length < 6) {
+                const errorDiv = document.getElementById("registerError");
+                errorDiv.textContent = "Password must be at least 6 characters long";
+                errorDiv.style.display = "block";
+                return;
+            }
+            
+            try {
+                let users = JSON.parse(localStorage.getItem("users")) || [];
+                
+                if (users.some(user => user.username === username)) {
+                    const errorDiv = document.getElementById("registerError");
+                    errorDiv.textContent = "Username already exists";
+                    errorDiv.style.display = "block";
+                    return;
+                }
+                
+                const newUser = {
+                    firstName,
+                    lastName,
+                    username,
+                    password,
+                    createdAt: new Date().toISOString()
+                };
+                
+                users.push(newUser);
+                localStorage.setItem("users", JSON.stringify(users));
+                
+                sessionStorage.setItem("currentUser", JSON.stringify({
+                    firstName,
+                    lastName,
+                    username
+                }));
+                
+                window.location.href = "login.html";
+                
+            } catch (error) {
+                console.error("Registration error:", error);
+                alert("An error occurred during registration. Please try again.");
+            }
+        });
+    </script>
+</body>
+</html>

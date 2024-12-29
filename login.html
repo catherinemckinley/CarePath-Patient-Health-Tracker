@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthTrack</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4e5ff;
+            font-family: 'Baskerville', serif;
+            color: #333;
+        }
+        
+        .login-container {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 550px;
+            height: 800px;
+        }
+
+        .login-container:hover {
+            border: 3px solid #4b0082;
+            box-shadow: 0 0 10px #4b4550;
+            border-radius: 15px;
+        }
+        
+        h2 {
+            font-family: 'Baskerville', serif;
+            font-size: 40px;
+            font-weight: bold;
+            color: #4b0082;
+            margin-bottom: 40px;
+        }
+
+        .picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid #4b0082;
+        }
+
+        .picture:hover {
+            animation: swirl 1s ease-in-out;
+            transform: scale(1.0);
+        }
+
+        @keyframes swirl {
+            0% {
+            transform: rotate(0deg) scale(1);
+            }
+            100% {
+            transform: rotate(360deg) scale(1);
+            }
+        }
+
+        h3 {
+            font-family: 'Baskerville', serif;
+            font-size: 30px;
+            font-weight: bold;
+            color: #4b0082;
+            margin-bottom: 40px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #333;
+            font-weight: bold;
+            font-family: 'Baskerville', serif;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            margin: 5px 0 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-family: 'Baskerville', serif;
+            font-size: 16px;
+        }
+
+        .button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            background-color: #4b0082;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: 'Baskerville', serif;
+        }
+
+        .button:hover {
+            background-color: #5f00a6;
+        }
+
+        .create-account {
+            background-color: #ffffff;
+            color: #4b0082;
+            border: 2px solid #4b0082;
+            font-family: 'Baskerville', serif;
+        }
+
+        .create-account:hover {
+            background-color: #f0e0ff;
+        }
+
+        .or-divider {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .error {
+            color: red;
+            display: none;
+            margin-top: 10px;
+            font-size: 14px;
+            font-family: 'Baskerville', serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Patient Health Tracker</h2>
+        <img src="gusgus_720.png" alt="Health Tracker Logo" class="picture">
+        <h3>Login</h3>
+        <form id="loginForm">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+            
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            
+            <button type="submit" class="button">Login</button>
+            <div id="loginError" class="error">Invalid username or password.</div>
+        </form>
+
+        <p class="or-divider">or</p>
+
+        <button class="button create-account" onclick="window.location.href='register.html'">Create Account</button>
+    </div>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            
+            document.getElementById("loginError").style.display = "none";
+            
+            const username = document.getElementById("username").value.trim().toLowerCase();
+            const password = document.getElementById("password").value;
+            
+            try {
+                const users = JSON.parse(localStorage.getItem("users")) || [];
+                const user = users.find(u => 
+                    u.username === username && 
+                    u.password === password
+                );
+                
+                if (user) {
+                    sessionStorage.setItem("currentUser", JSON.stringify({
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        username: user.username
+                    }));
+                    window.location.href = "dashboard.html";
+                } else {
+                    document.getElementById("loginError").style.display = "block";
+                }
+            } catch (error) {
+                console.error("Login error:", error);
+                alert("An error occurred during login. Please try again.");
+            }
+        });
+    </script>
+</body>
+</html>
