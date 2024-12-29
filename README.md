@@ -56,7 +56,7 @@ Project Setup
 Clone the Repository
 bash
 Copy code
-git clone <repository_url>
+git clone [<repository_url>](https://github.com/catherinemckinley/CarePath-Patient-Health-Tracker.git)
 Open the Project in a Browser
 Navigate to index.html or login.html to start the app.
 Usage
